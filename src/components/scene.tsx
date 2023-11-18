@@ -32,7 +32,7 @@ import {
 import { ConicPolygonGeometry } from "three-conic-polygon-geometry";
 import { degToRad } from "three/src/math/MathUtils";
 import { create } from "zustand";
-import baldEagle from "~/data/bald-eagle.json";
+import testData from "~/data/test.json";
 
 interface State {
   rotate: boolean;
@@ -123,9 +123,10 @@ function Menu() {
 function RotationToggle() {
   const shouldRotate = useStore((state) => state.rotate);
   const setRotate = useStore((state) => state.setRotate);
+  const firstRender = useRef(true);
 
-  const [targetRotation, setTargetRotation] = useState(0);
-  const rotate = useSpringValue(0, { config: config.wobbly });
+  const [targetRotation, setTargetRotation] = useState(-90);
+  const rotate = useSpringValue(targetRotation, { config: config.wobbly });
 
   const buttonStyle = useSpring({
     color: shouldRotate ? "#3b82f6" : "#ffffff",
@@ -140,22 +141,19 @@ function RotationToggle() {
 
   const onClick = async () => {
     setRotate(!shouldRotate);
+  };
+
+  useEffect(() => {
+    firstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (firstRender.current) return;
+
     let newTargetRotation = targetRotation - 90;
     rotate.start(newTargetRotation);
     setTargetRotation(newTargetRotation);
-  };
-
-  // useEffect(() => {
-  //   console.log(targetRotation);
-  //   rotate.start(targetRotation).then(() => {
-  //     if (targetRotation <= -360) setTargetRotation(0);
-  //   });
-
-  //   if (targetRotation <= -360) {
-  //     // rotate.set(targetRotation + 360);
-  //     // setTargetRotation(0);
-  //   }
-  // }, [targetRotation]);
+  }, [shouldRotate]);
 
   return (
     <animated.button
@@ -401,36 +399,35 @@ function Globe() {
         color: "red",
         opacity: 0.7,
         transparent: true,
-        wireframe: true,
+        // wireframe: true,
       }), // top cap material
     ];
 
     const polygonMeshes: Mesh[] = [];
-    const alt = 1.001;
-    baldEagle.geometries.forEach(({ coordinates }) => {
-      // const polygons =
-      //   geometry.type === "Polygon"
-      //     ? [geometry.coordinates]
-      //     : geometry.coordinates;
+    testData.features.forEach(({ properties, geometry }) => {
+      const polygons =
+        geometry.type === "Polygon"
+          ? [geometry.coordinates]
+          : geometry.coordinates;
+      const alt = 1.001;
 
-      // polygons.forEach((coords) => {
-      //   console.log("coords", coords);
-      polygonMeshes.push(
-        new Mesh(
-          new ConicPolygonGeometry(
-            // @ts-ignore
-            coordinates.flatMap((x) => x),
-            alt / 2,
-            alt,
-            true,
-            true,
-            false,
-            10
-          ),
-          materials
-        )
-      );
-      // });
+      polygons.forEach((coords) => {
+        polygonMeshes.push(
+          new Mesh(
+            new ConicPolygonGeometry(
+              // @ts-ignore
+              coords,
+              alt / 2,
+              alt,
+              true,
+              true,
+              true,
+              1
+            ),
+            materials
+          )
+        );
+      });
     });
 
     return polygonMeshes;
