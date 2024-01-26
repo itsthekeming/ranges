@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  GlobeAmericasIcon,
-  MinusIcon,
-  XMarkIcon,
-  ArrowPathIcon,
-} from "@heroicons/react/24/solid";
-import { XMarkIcon as XMarkIconSmall } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useSpring, useSpringValue } from "@react-spring/three";
 import { animated, config } from "@react-spring/web";
 import {
@@ -18,21 +12,18 @@ import {
   Sphere,
   useTexture,
 } from "@react-three/drei";
-import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import CameraControls from "camera-controls";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
-  DoubleSide,
   EllipseCurve,
   Group,
-  Mesh,
-  MeshBasicMaterial,
   PerspectiveCamera as PerspectiveCameraImpl,
 } from "three";
-import { ConicPolygonGeometry } from "three-conic-polygon-geometry";
 import { degToRad } from "three/src/math/MathUtils";
 import { create } from "zustand";
-import testData from "~/data/test.json";
+import { AxialTiltToggle } from "~/components/axial-tilt-toggle";
+import { RotationToggle } from "~/components/rotation-toggle";
 
 interface State {
   rotate: boolean;
@@ -58,9 +49,7 @@ const initialState: State = {
   orientation: "landscape",
 };
 
-extend({ ConicPolygonGeometry });
-
-const useStore = create<State & Action>((set, get) => ({
+export const useStore = create<State & Action>((set, get) => ({
   ...initialState,
   setRotate: (rotate) => set({ rotate }),
   setTilt: (tilt) => set({ tilt }),
@@ -117,93 +106,6 @@ function Menu() {
         Show Information Panel
       </button>
     </div>
-  );
-}
-
-function RotationToggle() {
-  const shouldRotate = useStore((state) => state.rotate);
-  const setRotate = useStore((state) => state.setRotate);
-  const firstRender = useRef(true);
-
-  const [targetRotation, setTargetRotation] = useState(-90);
-  const rotate = useSpringValue(targetRotation, { config: config.wobbly });
-
-  const buttonStyle = useSpring({
-    color: shouldRotate ? "#3b82f6" : "#ffffff",
-    config: config.wobbly,
-  });
-
-  const xMarkStyle = useSpring({
-    color: shouldRotate ? "#3b82f6" : "#ffffff",
-    opacity: shouldRotate ? 0 : 1,
-    config: config.wobbly,
-  });
-
-  const onClick = async () => {
-    setRotate(!shouldRotate);
-  };
-
-  useEffect(() => {
-    firstRender.current = false;
-  }, []);
-
-  useEffect(() => {
-    if (firstRender.current) return;
-
-    let newTargetRotation = targetRotation - 90;
-    rotate.start(newTargetRotation);
-    setTargetRotation(newTargetRotation);
-  }, [shouldRotate]);
-
-  return (
-    <animated.button
-      onClick={onClick}
-      style={buttonStyle}
-      className="rounded-full relative h-12 w-12 flex justify-center items-center"
-    >
-      <animated.div
-        style={{ rotate }}
-        className="absolute inset-0 flex justify-center items-center"
-      >
-        <ArrowPathIcon className="h-8 w-8 rounded-full scale-x-[-1]" />
-      </animated.div>
-      <animated.div
-        style={xMarkStyle}
-        className="absolute inset-0 flex justify-center items-center"
-      >
-        <XMarkIconSmall className="h-4 w-4" />
-      </animated.div>
-    </animated.button>
-  );
-}
-
-function AxialTiltToggle() {
-  const tilt = useStore((state) => state.tilt);
-  const setTilt = useStore((state) => state.setTilt);
-
-  const { rotate, color } = useSpring({
-    rotate: tilt ? 23.5 : 0,
-    color: tilt ? "#3b82f6" : "#ffffff",
-    config: config.wobbly,
-  });
-
-  const onClick = () => {
-    setTilt(!tilt);
-  };
-
-  return (
-    <animated.button
-      onClick={onClick}
-      style={{ rotate, color }}
-      className="relative rounded-full flex items-center justify-center h-12 w-12"
-    >
-      <div className="absolute inset-0 flex justify-center items-center">
-        <GlobeAmericasIcon className="h-8 w-8 rounded-full" />
-      </div>
-      <div className="absolute inset-0 flex justify-center items-center">
-        <MinusIcon className="h-12 w-12 rotate-90 rounded-full" />
-      </div>
-    </animated.button>
   );
 }
 
@@ -381,63 +283,63 @@ function Globe() {
     ref.current.rotation.x = axialTilt.get();
   });
 
-  const polygonMeshes = useMemo(() => {
-    const materials = [
-      new MeshBasicMaterial({
-        side: DoubleSide,
-        color: "green",
-        opacity: 0.1,
-        transparent: true,
-      }), // side material
-      new MeshBasicMaterial({
-        side: DoubleSide,
-        color: "red",
-        opacity: 0.7,
-        transparent: true,
-      }), // bottom cap material
-      new MeshBasicMaterial({
-        color: "red",
-        opacity: 0.7,
-        transparent: true,
-        // wireframe: true,
-      }), // top cap material
-    ];
+  // const polygonMeshes = useMemo(() => {
+  //   const materials = [
+  //     new MeshBasicMaterial({
+  //       side: DoubleSide,
+  //       color: "green",
+  //       opacity: 0.1,
+  //       transparent: true,
+  //     }), // side material
+  //     new MeshBasicMaterial({
+  //       side: DoubleSide,
+  //       color: "red",
+  //       opacity: 0.7,
+  //       transparent: true,
+  //     }), // bottom cap material
+  //     new MeshBasicMaterial({
+  //       color: "red",
+  //       opacity: 0.7,
+  //       transparent: true,
+  //       // wireframe: true,
+  //     }), // top cap material
+  //   ];
 
-    const polygonMeshes: Mesh[] = [];
-    testData.features.forEach(({ properties, geometry }) => {
-      const polygons =
-        geometry.type === "Polygon"
-          ? [geometry.coordinates]
-          : geometry.coordinates;
-      const alt = 1.001;
+  //   const polygonMeshes: Mesh[] = [];
+  //   testData.features.forEach(({ properties, geometry }) => {
+  //     const polygons =
+  //       geometry.type === "Polygon"
+  //         ? [geometry.coordinates]
+  //         : geometry.coordinates;
+  //     const alt = 1.001;
 
-      polygons.forEach((coords) => {
-        polygonMeshes.push(
-          new Mesh(
-            new ConicPolygonGeometry(
-              // @ts-ignore
-              coords,
-              alt / 2,
-              alt,
-              true,
-              true,
-              true,
-              1
-            ),
-            materials
-          )
-        );
-      });
-    });
+  //     polygons.forEach((coords) => {
+  //       polygonMeshes.push(
+  //         new Mesh(
+  //           new ConicPolygonGeometry(
+  //             // @ts-ignore
+  //             coords,
+  //             alt / 2,
+  //             alt,
+  //             true,
+  //             true,
+  //             true,
+  //             1
+  //           ),
+  //           materials
+  //         )
+  //       );
+  //     });
+  //   });
 
-    return polygonMeshes;
-  }, []);
+  //   return polygonMeshes;
+  // }, []);
 
   return (
     <group ref={ref}>
-      {polygonMeshes.map((x) => (
+      {/* {polygonMeshes.map((x) => (
         <primitive key={x.id} object={x} />
-      ))}
+      ))} */}
       {/* equator */}
       <Line
         points={points}
@@ -461,3 +363,7 @@ function Globe() {
     </group>
   );
 }
+
+interface EquatorProps {}
+
+function Equator() {}
