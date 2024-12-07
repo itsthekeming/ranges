@@ -1,7 +1,7 @@
 import { GlobeAmericasIcon, MinusIcon } from "@heroicons/react/24/solid";
 import { animated, config, useSpring, useSpringValue } from "@react-spring/web";
 import { useEffect, useState } from "react";
-import { useStore } from "~/components/scene";
+import { useStore } from "~/state";
 
 export function AxialTiltToggle() {
   const tilt = useStore((state) => state.tilt);
@@ -12,17 +12,17 @@ export function AxialTiltToggle() {
 
   const { color } = useSpring({
     color: tilt ? "#3b82f6" : "#ffffff",
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   const rotate = useSpringValue(iconRotation, {
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   const handleHoverOrFocus = () => {
     if (!rotateIcon) return;
 
-    rotate.start(Math.abs(iconRotation - 4));
+    rotate.start(Math.abs(iconRotation - 11.75));
   };
 
   const handleUnhoverOrBlur = () => {
@@ -38,7 +38,7 @@ export function AxialTiltToggle() {
 
   useEffect(() => {
     rotate.start(iconRotation);
-  }, [tilt]);
+  }, [iconRotation, rotate, tilt]);
 
   return (
     <animated.button
@@ -48,13 +48,13 @@ export function AxialTiltToggle() {
       onFocus={handleHoverOrFocus}
       onBlur={handleUnhoverOrBlur}
       style={{ rotate, color }}
-      className="relative rounded-full flex items-center justify-center h-12 w-12"
+      className="relative flex size-12 items-center justify-center rounded-full"
     >
-      <div className="absolute inset-0 flex justify-center items-center">
-        <GlobeAmericasIcon className="h-8 w-8 rounded-full" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <GlobeAmericasIcon className="size-8 rounded-full" />
       </div>
-      <div className="absolute inset-0 flex justify-center items-center">
-        <MinusIcon className="h-12 w-12 rotate-90 rounded-full" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <MinusIcon className="size-12 rotate-90 rounded-full" />
       </div>
     </animated.button>
   );

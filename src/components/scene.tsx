@@ -1,8 +1,4 @@
-"use client";
-
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useSpring, useSpringValue } from "@react-spring/three";
-import { animated, config } from "@react-spring/web";
+import { useSpring, useSpringValue, config } from "@react-spring/three";
 import {
   CameraControls as CameraControlsImpl,
   GizmoHelper,
@@ -14,62 +10,14 @@ import {
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import CameraControls from "camera-controls";
-import { useEffect, useRef } from "react";
-import {
-  EllipseCurve,
-  Group,
-  PerspectiveCamera as PerspectiveCameraImpl,
-} from "three";
-import { degToRad } from "three/src/math/MathUtils";
-import { create } from "zustand";
-import { AxialTiltToggle } from "~/components/axial-tilt-toggle";
-import { RotationToggle } from "~/components/rotation-toggle";
+import type { PropsWithChildren } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import type { Group, PerspectiveCamera as PerspectiveCameraImpl } from "three";
+import { EllipseCurve } from "three";
+import { degToRad } from "maath/misc";
+import { useStore } from "~/state";
 
-interface State {
-  rotate: boolean;
-  tilt: boolean;
-  showInformationPanel: boolean;
-  globeHovered: boolean;
-  orientation: "landscape" | "portrait";
-}
-
-interface Action {
-  setRotate: (rotate: boolean) => void;
-  setTilt: (tilt: boolean) => void;
-  setShowInformationPanel: (showInformationPanel: boolean) => void;
-  setGlobeHovered: (globeHovered: boolean) => void;
-  setOrientation: (orientation: "landscape" | "portrait") => void;
-}
-
-const initialState: State = {
-  rotate: true,
-  tilt: true,
-  showInformationPanel: false,
-  globeHovered: false,
-  orientation: "landscape",
-};
-
-export const useStore = create<State & Action>((set, get) => ({
-  ...initialState,
-  setRotate: (rotate) => set({ rotate }),
-  setTilt: (tilt) => set({ tilt }),
-  setShowInformationPanel: (showInformationPanel) =>
-    set({ showInformationPanel: showInformationPanel }),
-  setGlobeHovered: (globeHovered) => set({ globeHovered }),
-  setOrientation: (orientation) => set({ orientation }),
-}));
-
-export function SceneWrapper() {
-  return (
-    <>
-      <Scene />
-      <InformationPanel />
-      <Menu />
-    </>
-  );
-}
-
-function Scene() {
+export function Scene({ children }: PropsWithChildren) {
   return (
     <Canvas className="z-0 grow">
       <color attach="background" args={["black"]} />
@@ -77,7 +25,7 @@ function Scene() {
       <pointLight position={[10, 10, 10]} />
       <Camera />
       <Controls />
-      <Globe />
+      <Globe>{children}</Globe>
       <GizmoHelper>
         <GizmoViewport />
       </GizmoHelper>
@@ -85,86 +33,15 @@ function Scene() {
   );
 }
 
-function Menu() {
-  const showInformationPanel = useStore((state) => state.showInformationPanel);
-  const setShowInformationPanel = useStore(
-    (state) => state.setShowInformationPanel
-  );
-
-  const onToggleOffsetGlobeClick = () => {
-    setShowInformationPanel(!showInformationPanel);
-  };
-
-  return (
-    <div className="z-10 fixed bottom-4 left-4 text-white space-x-4 flex flex-row items-center">
-      <RotationToggle />
-      <AxialTiltToggle />
-      <button
-        className="px-4 py-2 bg-blue-500 rounded"
-        onClick={onToggleOffsetGlobeClick}
-      >
-        Show Information Panel
-      </button>
-    </div>
-  );
-}
-
-function InformationPanel() {
-  const showInformationPanel = useStore((state) => state.showInformationPanel);
-  const setShowInformationPanel = useStore(
-    (state) => state.setShowInformationPanel
-  );
-
-  const orientation = useStore((state) => state.orientation);
-
-  const { opacity, x, y } = useSpring({
-    opacity: showInformationPanel ? 1 : 0,
-    x:
-      orientation === "landscape"
-        ? showInformationPanel
-          ? "0%"
-          : "75%"
-        : "0%",
-    y:
-      orientation === "portrait" ? (showInformationPanel ? "0%" : "75%") : "0%",
-    config: config.wobbly,
-  });
-
-  const handleClose = () => {
-    setShowInformationPanel(false);
-  };
-
-  return (
-    <animated.div
-      style={{ x, y }}
-      className="fixed z-10 landscape:w-1/2 landscape:inset-y-8 landscape:right-8 portrait:inset-x-4 portrait:bottom-4 portrait:h-1/2"
-    >
-      <animated.div
-        style={{ opacity }}
-        className="absolute inset-0 blur-[2px] bg-gray-950/90 saturate-0 backdrop-blur-lg rounded-lg"
-      />
-      <animated.div
-        style={{ opacity }}
-        className="absolute inset-0 flex flex-col"
-      >
-        <div className="flex justify-end p-4">
-          <button onClick={handleClose}>
-            <XMarkIcon className="text-white h-8 w-8" />
-          </button>
-        </div>
-        <div className="flex items-center justify-center grow">
-          <h1 className="text-white text-5xl">Information Panel</h1>
-        </div>
-      </animated.div>
-    </animated.div>
-  );
-}
-
 function Camera() {
   const { viewport } = useThree();
-  const showInformationPanel = useStore((state) => state.showInformationPanel);
-  const orientation = useStore((state) => state.orientation);
-  const setOrientation = useStore((state) => state.setOrientation);
+  const { showInformationPanel, orientation, setOrientation } = useStore(
+    ({ showInformationPanel, orientation, setOrientation }) => ({
+      showInformationPanel,
+      orientation,
+      setOrientation,
+    })
+  );
 
   const ref = useRef<PerspectiveCameraImpl>(null);
 
@@ -174,7 +51,7 @@ function Camera() {
         ? viewport.width / 4
         : viewport.height / 4
       : 0,
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   // update state orientation. this will allow us to read orientation outside of three.js context
@@ -182,7 +59,7 @@ function Camera() {
     setOrientation(
       viewport.width >= viewport.height ? "landscape" : "portrait"
     );
-  }, [viewport.width, viewport.height]);
+  }, [setOrientation, viewport.width, viewport.height]);
 
   // update view offset based on animation
   useFrame(() => {
@@ -199,24 +76,24 @@ function Camera() {
   return <PerspectiveCamera ref={ref} makeDefault position={[5, 0, 0]} />;
 }
 
-const actionsThatStopRotation: number[] = [
-  CameraControls.ACTION.ROTATE,
-  CameraControls.ACTION.TOUCH_ROTATE,
-];
-
 function Controls() {
-  const rotate = useStore((state) => state.rotate);
-  const setRotate = useStore((state) => state.setRotate);
+  const actionsThatStopRotation = new Set<number>([
+    CameraControls.ACTION.ROTATE,
+    CameraControls.ACTION.TOUCH_ROTATE,
+  ]);
+
+  const { rotate, setRotate } = useStore(({ rotate, setRotate }) => ({
+    rotate,
+    setRotate,
+  }));
   const ref = useRef<CameraControlsImpl>(null);
 
-  const polarAngle = useSpringValue(degToRad(90), { config: config.wobbly });
+  const polarAngle = useSpringValue(degToRad(90), { config: config.gentle });
 
   useFrame(() => {
     if (!ref.current) return;
 
-    if (polarAngle.isAnimating) {
-      ref.current.polarAngle = polarAngle.get();
-    }
+    if (polarAngle.isAnimating) ref.current.polarAngle = polarAngle.get();
   });
 
   // reset camera polar angle when rotation starts
@@ -226,14 +103,14 @@ function Controls() {
 
     polarAngle.set(ref.current.polarAngle); // give the animation a starting point
     polarAngle.start(degToRad(90));
-  }, [rotate]);
+  }, [rotate, polarAngle]);
 
-  // behavior is that if the user clicks but doesn't drag, rotation doesn't change
-  // if user clicks and drags (therefore changing the camera), we disable rotation
+  // behavior: if the user clicks but doesn't drag, rotation doesn't change
+  // if user clicks and drags, we disable rotation because they are taking control of the camera
   const onChange = () => {
     if (!ref.current) return;
     if (!polarAngle.idle) return;
-    if (!actionsThatStopRotation.includes(ref.current.currentAction)) return;
+    if (!actionsThatStopRotation.has(ref.current.currentAction)) return;
 
     setRotate(false);
   };
@@ -251,12 +128,12 @@ function Controls() {
   );
 }
 
-// 1 rotation every 30 seconds
-const rotationSpeed = (2 * Math.PI) / 30;
+// 360 degrees rotation every 30 seconds
+const rotationDuration = 30;
 const sphereSegments = 256;
 const points = new EllipseCurve(0, 0, 1.001, 1.001).getPoints(sphereSegments);
 
-function Globe() {
+function Globe({ children }: PropsWithChildren) {
   const rotate = useStore((state) => state.rotate);
   const tilt = useStore((state) => state.tilt);
 
@@ -264,82 +141,25 @@ function Globe() {
 
   const texture = useTexture("/2_no_clouds_16k.jpg");
 
-  // rotation
-  useFrame((_, delta) => {
-    if (!rotate) return;
-    if (!ref.current) return;
-
-    ref.current.rotation.y += rotationSpeed * delta;
-  });
-
   const { axialTilt } = useSpring({
-    axialTilt: tilt ? degToRad(-23.5) : 0,
-    config: config.wobbly,
+    axialTilt: tilt ? -degToRad(23.5) : 0,
+    config: config.gentle,
   });
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!ref.current) return;
 
+    // globe tilts around the x-axis
     ref.current.rotation.x = axialTilt.get();
+
+    // globe rotates around the y-axis, if enabled
+    if (rotate)
+      ref.current.rotation.y += ((2 * Math.PI) / rotationDuration) * delta;
   });
-
-  // const polygonMeshes = useMemo(() => {
-  //   const materials = [
-  //     new MeshBasicMaterial({
-  //       side: DoubleSide,
-  //       color: "green",
-  //       opacity: 0.1,
-  //       transparent: true,
-  //     }), // side material
-  //     new MeshBasicMaterial({
-  //       side: DoubleSide,
-  //       color: "red",
-  //       opacity: 0.7,
-  //       transparent: true,
-  //     }), // bottom cap material
-  //     new MeshBasicMaterial({
-  //       color: "red",
-  //       opacity: 0.7,
-  //       transparent: true,
-  //       // wireframe: true,
-  //     }), // top cap material
-  //   ];
-
-  //   const polygonMeshes: Mesh[] = [];
-  //   testData.features.forEach(({ properties, geometry }) => {
-  //     const polygons =
-  //       geometry.type === "Polygon"
-  //         ? [geometry.coordinates]
-  //         : geometry.coordinates;
-  //     const alt = 1.001;
-
-  //     polygons.forEach((coords) => {
-  //       polygonMeshes.push(
-  //         new Mesh(
-  //           new ConicPolygonGeometry(
-  //             // @ts-ignore
-  //             coords,
-  //             alt / 2,
-  //             alt,
-  //             true,
-  //             true,
-  //             true,
-  //             1
-  //           ),
-  //           materials
-  //         )
-  //       );
-  //     });
-  //   });
-
-  //   return polygonMeshes;
-  // }, []);
 
   return (
     <group ref={ref}>
-      {/* {polygonMeshes.map((x) => (
-        <primitive key={x.id} object={x} />
-      ))} */}
+      <Suspense fallback={null}>{children}</Suspense>
       {/* equator */}
       <Line
         points={points}
@@ -354,6 +174,7 @@ function Globe() {
         linewidth={1}
         rotation={[0, -Math.PI / 2, 0]}
       />
+      {/* globe */}
       <Sphere
         args={[1, sphereSegments, sphereSegments]}
         rotation={[0, -Math.PI / 2, 0]}
@@ -363,7 +184,3 @@ function Globe() {
     </group>
   );
 }
-
-interface EquatorProps {}
-
-function Equator() {}

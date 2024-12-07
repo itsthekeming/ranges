@@ -3,7 +3,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { config, useSpringValue } from "@react-spring/three";
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
-import { useStore } from "~/components/scene";
+import { useStore } from "~/state";
 
 export function RotationToggle() {
   const rotateGlobe = useStore((state) => state.rotate);
@@ -13,18 +13,18 @@ export function RotationToggle() {
   const [rotateIcon, setRotateIcon] = useState(true);
 
   const rotate = useSpringValue(iconRotation, {
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   const buttonStyle = useSpring({
     color: rotateGlobe ? "#3b82f6" : "#ffffff",
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   const xMarkStyle = useSpring({
     color: rotateGlobe ? "#3b82f6" : "#ffffff",
     opacity: rotateGlobe ? 0 : 1,
-    config: config.wobbly,
+    config: config.gentle,
   });
 
   const handleHover = () => {
@@ -39,6 +39,7 @@ export function RotationToggle() {
   };
 
   const handleClick = () => {
+    console.log("handleClick");
     setRotateGlobe(!rotateGlobe);
     setRotateIcon(false);
     setIconRotation((prev) => prev - 90);
@@ -46,7 +47,7 @@ export function RotationToggle() {
 
   useEffect(() => {
     rotate.start(iconRotation);
-  }, [iconRotation]);
+  }, [rotate, iconRotation]);
 
   return (
     <animated.button
@@ -54,19 +55,19 @@ export function RotationToggle() {
       onMouseEnter={handleHover}
       onMouseLeave={handleUnhover}
       style={buttonStyle}
-      className="rounded-full relative h-12 w-12 flex justify-center items-center"
+      className="relative flex size-12 items-center justify-center rounded-full"
     >
       <animated.div
         style={{ rotate }}
-        className="absolute inset-0 flex justify-center items-center"
+        className="absolute inset-0 flex items-center justify-center"
       >
-        <ArrowPathIcon className="h-8 w-8 rounded-full scale-x-[-1]" />
+        <ArrowPathIcon className="size-8 -scale-x-100 rounded-full" />
       </animated.div>
       <animated.div
         style={xMarkStyle}
-        className="absolute inset-0 flex justify-center items-center"
+        className="absolute inset-0 flex items-center justify-center"
       >
-        <XMarkIcon className="h-4 w-4" />
+        <XMarkIcon className="size-4" />
       </animated.div>
     </animated.button>
   );
