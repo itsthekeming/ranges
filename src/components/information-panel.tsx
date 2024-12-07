@@ -1,7 +1,5 @@
 import {
   ChevronDoubleLeftIcon,
-  ChevronLeftIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import { useSpring } from "@react-spring/three";
 import { animated, config } from "@react-spring/web";
@@ -10,11 +8,10 @@ import { useStore } from "~/state";
 
 interface InformationPanelProps {
   title: string;
+  content: string;
 }
 
-const toggleButtonKeys = new Set(["toggleRight", "toggleX", "toggleRotate"]);
-
-export function InformationPanel({ title }: InformationPanelProps) {
+export function InformationPanel({ title, content }: InformationPanelProps) {
   const { showInformationPanel, setShowInformationPanel, orientation } =
     useStore(
       ({ showInformationPanel, setShowInformationPanel, orientation }) => ({
@@ -32,7 +29,6 @@ export function InformationPanel({ title }: InformationPanelProps) {
     toggleRight,
     toggleX,
     toggleRotate,
-    toggleOpacity,
   } = useSpring({
     opacity: showInformationPanel ? 0.9 : 0,
     panelX:
@@ -51,7 +47,6 @@ export function InformationPanel({ title }: InformationPanelProps) {
     toggleX: showInformationPanel ? "0%" : "0%",
     toggleRight: showInformationPanel ? "3rem" : "1rem",
     toggleRotate: showInformationPanel ? 180 : 0,
-    toggleOpacity: showInformationPanel ? 0 : 0.9,
     config: { ...config.gentle, clamp: true },
   });
 
@@ -86,18 +81,10 @@ export function InformationPanel({ title }: InformationPanelProps) {
           style={{ opacity }}
           className="absolute inset-0 flex flex-col"
         >
-          <div className="flex grow flex-col p-4 text-white">
-            <h1 className="text-5xl">{title}</h1>
-            <ul className="mt-14">
-              <li>
-                <Link to="/Yellow-cheeked_chipmunk">
-                  Yellow-cheeked chimpmunk
-                </Link>
-              </li>
-              <li>
-                <Link to="/American_bison">American bison</Link>
-              </li>
-            </ul>
+          <div className="relative overflow-y-scroll flex grow flex-col p-4 text-white">
+            <h1 className="sticky top-0 text-5xl">{title}</h1>
+            <Link to="/Yellow-cheeked_chipmunk" className="text-white">Yellow-cheeked Chipmunk</Link>
+            <div dangerouslySetInnerHTML={{__html: content}} />
           </div>
         </animated.div>
       </animated.div>

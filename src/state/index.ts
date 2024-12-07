@@ -21,7 +21,7 @@ interface Action {
 const initialState: State = {
   rotate: true,
   tilt: false,
-  showInformationPanel: true,
+  showInformationPanel: false,
   globeHovered: false,
   orientation: "landscape",
   levelOfDetail: 0.01,

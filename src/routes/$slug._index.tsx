@@ -4,20 +4,19 @@ import fs from "fs";
 import type { FeatureCollection } from "geojson";
 import invariant from "tiny-invariant";
 import { Distribution } from "~/components/distribution.client";
+import simplify from 'simplify-geojson'
 
-interface LoaderData {
-  distribution: FeatureCollection;
-}
+const levelOfDetail = 0.01;
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { slug } = params;
   invariant(slug);
 
-  const distribution = JSON.parse(
+  const distribution = simplify(JSON.parse(
     fs.readFileSync(`_data/${slug}/distributions/default.json`, "utf-8")
-  ) as FeatureCollection;
+  ), levelOfDetail) as FeatureCollection;
 
-  const data: LoaderData = {
+  const data = {
     distribution,
   };
 
@@ -25,7 +24,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export default function Component() {
-  const { distribution } = useLoaderData<LoaderData>();
+  const { distribution } = useLoaderData<typeof loader>();
 
   return <Distribution distribution={distribution} />;
 }

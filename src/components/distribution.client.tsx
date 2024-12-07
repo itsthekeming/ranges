@@ -2,8 +2,6 @@ import { type FeatureCollection } from 'geojson'
 import { useMemo } from 'react'
 import { DoubleSide, Mesh, MeshBasicMaterial } from 'three'
 import { ConicPolygonGeometry } from 'three-conic-polygon-geometry'
-import { useStore } from '~/state'
-import simplify from 'simplify-geojson'
 import { match } from 'ts-pattern'
 
 interface DistributionProps {
@@ -11,12 +9,6 @@ interface DistributionProps {
 }
 
 export function Distribution({ distribution }: DistributionProps) {
-  const levelOfDetail = useStore((state) => state.levelOfDetail)
-
-  const simplifiedDistribution = useMemo(() => {
-    return simplify(distribution, levelOfDetail) as FeatureCollection
-  }, [distribution, levelOfDetail])
-
   const materials = useMemo(() => {
     return [
       new MeshBasicMaterial({
@@ -43,7 +35,7 @@ export function Distribution({ distribution }: DistributionProps) {
   const meshes = useMemo(() => {
     const alt = 1.001
 
-    return simplifiedDistribution.features.flatMap(({ geometry }) => {
+    return distribution.features.flatMap(({ geometry }) => {
       const polygons = match(geometry)
         .with({ type: 'Polygon' }, (geometry) => [geometry.coordinates])
         .with({ type: 'GeometryCollection' }, (geometry) => []) // need to handle GeometryCollection flattening?
@@ -57,7 +49,7 @@ export function Distribution({ distribution }: DistributionProps) {
         return new Mesh(conicPolygonGeometry, materials)
       })
     })
-  }, [simplifiedDistribution, materials])
+  }, [distribution, materials])
 
   return (
     <>
