@@ -238,8 +238,8 @@ export const nameUsageSchema = z.object({
   references: z.string().url().optional(),
   modified: z.string().datetime().optional(),
   deleted: z.string().datetime().optional(),
-  lastCrawled: z.string().datetime().optional(),
-  lastInterpreted: z.string().datetime().optional(),
+  lastCrawled: z.string().datetime({ offset: true }).optional(),
+  lastInterpreted: z.string().datetime({ offset: true }).optional(),
   issues: z.array(issuesEnum).describe("Data quality issues found.").optional(),
   class: z.string().optional(),
 }).strict().required({

@@ -1,7 +1,6 @@
 import { ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
 import { useSpring } from "@react-spring/three";
 import { animated, config } from "@react-spring/web";
-import { Link } from "react-router";
 import { useStore } from "~/state";
 
 interface InformationPanelProps {
@@ -16,7 +15,7 @@ export function InformationPanel({ title, content }: InformationPanelProps) {
         showInformationPanel,
         setShowInformationPanel,
         orientation,
-      }),
+      })
     );
 
   const {
@@ -80,11 +79,8 @@ export function InformationPanel({ title, content }: InformationPanelProps) {
           className="absolute inset-0 flex flex-col"
         >
           <div className="relative overflow-y-scroll flex grow flex-col p-4 text-white">
-            <h1 className="sticky top-0 text-5xl">{title}</h1>
-            <Link to="/Yellow-cheeked_chipmunk" className="text-white">
-              Yellow-cheeked Chipmunk
-            </Link>
-            {content}
+            <h1 className="sticky top-0 text-4xl">{title}</h1>
+            <div className="mt-4">{content}</div>
           </div>
         </animated.div>
       </animated.div>

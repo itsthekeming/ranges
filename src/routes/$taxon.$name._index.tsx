@@ -1,7 +1,7 @@
 import fs from "fs";
 import { Distribution } from "~/components/distribution.client";
 import simplify from "simplify-geojson";
-import type { Route } from "./+types/species.$name._index";
+import type { Route } from "./+types/$taxon.$name._index";
 
 const levelOfDetail = 0.01;
 
@@ -10,9 +10,12 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const distribution = simplify(
     JSON.parse(
-      fs.readFileSync(`_data/${name}/distributions/default.json`, "utf-8"),
+      fs.readFileSync(
+        `_data/species/${name}/distributions/default.json`,
+        "utf-8"
+      )
     ),
-    levelOfDetail,
+    levelOfDetail
   );
 
   return {

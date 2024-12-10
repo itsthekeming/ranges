@@ -1,7 +1,11 @@
 import { nameUsageSchema } from "~/types/name-usage";
+import fs from 'node:fs/promises'
+import { speciesMetaSchema } from "~/types/species-meta";
 
-export async function getSpecies(key: string) {
-    const url = `https://api.gbif.org/v1/species/${key}`;
+export async function getSpecies(name: string) {
+    const speciesMeta = await speciesMetaSchema.parseAsync(JSON.parse(await fs.readFile(`_data/species/${name}/meta.json`, "utf-8")));
+
+    const url = `https://api.gbif.org/v1/species/${speciesMeta.gbifKey}`;
 
     const response = await fetch(url, {
         method: "GET",
@@ -11,8 +15,12 @@ export async function getSpecies(key: string) {
         },
     });
 
-    const data = await response.json();
-    const nameUsage = await nameUsageSchema.parseAsync(data);
+    const { success, data, error } = await nameUsageSchema.safeParseAsync(await response.json());
 
-    return nameUsage;
+    if (!success) {
+        console.error(error.errors[0].path)
+        throw error
+    }
+
+    return data;
 }
