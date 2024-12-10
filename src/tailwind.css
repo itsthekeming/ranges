@@ -9,35 +9,35 @@
 /* Reset italic styling set by user agent */
 cite,
 dfn {
-	font-style: inherit;
+  font-style: inherit;
 }
 
 /* Straight quote marks for <q> */
 q {
-	quotes: '"' '"' "'" "'";
+  quotes: '"' '"' "'" "'";
 }
 
 /* Avoid collision of blockquote with floating elements by swapping margin and padding */
 blockquote {
-	overflow: hidden;
-	margin: 1em 0;
-	padding: 0 40px;
+  overflow: hidden;
+  margin: 1em 0;
+  padding: 0 40px;
 }
 
 /* Consistent size for <small>, <sub> and <sup> */
 small {
-	font-size: 85%;
+  font-size: 85%;
 }
 
 .mw-body-content sub,
 .mw-body-content sup {
-	font-size: 80%;
+  font-size: 80%;
 }
 
 /* Same spacing for indented and unindented paragraphs on talk pages */
 .ns-talk .mw-body-content dd {
-	margin-top: 0.4em;
-	margin-bottom: 0.4em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
 }
 
 /* Reduce page jumps by hiding collapsed/dismissed content */
@@ -55,80 +55,80 @@ small {
 
 /* Hide charinsert base for those not using the gadget */
 #editpage-specialchars {
-	display: none;
+  display: none;
 }
 
 /* Different margin on references */
 .references {
-	margin-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 /* Cite customizations for Parsoid
  * Once everything uses the one true parser these are just customizations
  */
-span[ rel="mw:referencedBy" ] {
-	counter-reset: mw-ref-linkback 0;
+span[rel="mw:referencedBy"] {
+  counter-reset: mw-ref-linkback 0;
 }
 
-span[ rel='mw:referencedBy' ] > a::before {
-	content: counter( mw-ref-linkback, lower-alpha );
-	font-size: 80%;
-	font-weight: bold;
-	font-style: italic;
+span[rel="mw:referencedBy"] > a::before {
+  content: counter(mw-ref-linkback, lower-alpha);
+  font-size: 80%;
+  font-weight: bold;
+  font-style: italic;
 }
 
-a[ rel="mw:referencedBy" ]::before {
-	font-weight: bold;
-	content: "^";
+a[rel="mw:referencedBy"]::before {
+  font-weight: bold;
+  content: "^";
 }
 
-span[ rel="mw:referencedBy" ]::before {
-	content: "^ ";
+span[rel="mw:referencedBy"]::before {
+  content: "^ ";
 }
 
 /* These blocks need review after [[phab:T371839]] or related are complete */
-.mw-ref > a[style~="mw-Ref"][data-mw-group=lower-alpha]::after {
-	content: '[' counter( mw-Ref, lower-alpha ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="lower-alpha"]::after {
+  content: "[" counter(mw-Ref, lower-alpha) "]";
 }
 
-.mw-ref > a[style~="mw-Ref"][data-mw-group=upper-alpha]::after {
-	content: '[' counter( mw-Ref, upper-alpha ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="upper-alpha"]::after {
+  content: "[" counter(mw-Ref, upper-alpha) "]";
 }
 
-.mw-ref > a[style~="mw-Ref"][data-mw-group=decimal]::after {
-	content: '[' counter( mw-Ref, decimal ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="decimal"]::after {
+  content: "[" counter(mw-Ref, decimal) "]";
 }
 
-.mw-ref > a[style~="mw-Ref"][data-mw-group=lower-roman]::after {
-	content: '[' counter( mw-Ref, lower-roman ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="lower-roman"]::after {
+  content: "[" counter(mw-Ref, lower-roman) "]";
 }
 
-.mw-ref > a[style~="mw-Ref"][data-mw-group=upper-roman]::after {
-	content: '[' counter( mw-Ref, upper-roman ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="upper-roman"]::after {
+  content: "[" counter(mw-Ref, upper-roman) "]";
 }
 
-.mw-ref > a[style~="mw-Ref"][data-mw-group=lower-greek]::after {
-	content: '[' counter( mw-Ref, lower-greek ) ']';
+.mw-ref > a[style~="mw-Ref"][data-mw-group="lower-greek"]::after {
+  content: "[" counter(mw-Ref, lower-greek) "]";
 }
 
 /* Styling for jQuery makeCollapsible, matching that of collapseButton */
 .mw-parser-output .mw-collapsible-toggle:not(.mw-ui-button) {
-	font-weight: normal;
-	padding-right: 0.2em;
-	padding-left: 0.2em;
+  font-weight: normal;
+  padding-right: 0.2em;
+  padding-left: 0.2em;
 }
 
 .mw-collapsible-leftside-toggle .mw-collapsible-toggle {
-	/* @noflip */
-	float: left;
+  /* @noflip */
+  float: left;
 }
 
 /* Lists in wikitable data cells are always left-aligned */
 .wikitable td ul,
 .wikitable td ol,
 .wikitable td dl {
-	/* @noflip */
-	text-align: left;
+  /* @noflip */
+  text-align: left;
 }
 
 /* Change the external link icon to a PDF icon for all PDF files */
@@ -138,9 +138,10 @@ span[ rel="mw:referencedBy" ]::before {
 .mw-parser-output a[href$=".PDF"].external,
 .mw-parser-output a[href*=".PDF?"].external,
 .mw-parser-output a[href*=".PDF#"].external {
-	background: url("//upload.wikimedia.org/wikipedia/commons/4/4d/Icon_pdf_file.png") no-repeat right;
-	/* @noflip */
-	padding: 8px 18px 8px 0;
+  background: url("//upload.wikimedia.org/wikipedia/commons/4/4d/Icon_pdf_file.png")
+    no-repeat right;
+  /* @noflip */
+  padding: 8px 18px 8px 0;
 }
 
 /* System messages styled similarly to fmbox */
@@ -152,28 +153,29 @@ span[ rel="mw:referencedBy" ]::before {
 div.mw-lag-warn-high,
 div.mw-cascadeprotectedwarning,
 div#mw-protect-cascadeon {
-	clear: both;
-	margin: 0.2em 0;
-	border: 1px solid #bb7070;
-	background-color: var(--background-color-error-subtle, #ffdbdb);
-	padding: 0.25em 0.9em;
-	box-sizing: border-box;
+  clear: both;
+  margin: 0.2em 0;
+  border: 1px solid #bb7070;
+  background-color: var(--background-color-error-subtle, #ffdbdb);
+  padding: 0.25em 0.9em;
+  box-sizing: border-box;
 }
 
 /* default colors for partial block message */
 /* gotta get over the hump introduced by the triple class above */
-.mw-contributions-blocked-notice-partial .mw-warning-with-logexcerpt.mw-warning-with-logexcerpt {
-	border-color: #fc3;
-	background-color: var(--background-color-warning-subtle, #fef6e7);
+.mw-contributions-blocked-notice-partial
+  .mw-warning-with-logexcerpt.mw-warning-with-logexcerpt {
+  border-color: #fc3;
+  background-color: var(--background-color-warning-subtle, #fef6e7);
 }
 
 /* Minimum thumb width */
 @media (min-width: 640px) {
-	figure[typeof~='mw:File/Thumb'],
-	figure[typeof~='mw:File/Frame'],
-	.thumbinner {
-		min-width: 100px;
-	}
+  figure[typeof~="mw:File/Thumb"],
+  figure[typeof~="mw:File/Frame"],
+  .thumbinner {
+    min-width: 100px;
+  }
 }
 
 /* Prevent floating boxes from overlapping any category listings,
@@ -184,7 +186,7 @@ div#mw-protect-cascadeon {
 #filehistory,
 #wikiPreview,
 #wikiDiff {
-	clear: both;
+  clear: both;
 }
 
 /* Hide stuff meant for accounts with special permissions. Made visible again in
@@ -202,7 +204,7 @@ div#mw-protect-cascadeon {
 .extendedconfirmed-show,
 .autoconfirmed-show,
 .user-show {
-	display: none;
+  display: none;
 }
 
 /* Hide the redlink generated by {{Editnotice}},
@@ -214,21 +216,21 @@ div#mw-protect-cascadeon {
 .ve-ui-mwNoticesPopupTool-item .editnotice-redlink,
 .ve-ui-mwNoticesPopupTool-item .mbox-image,
 .ve-ui-mwNoticesPopupTool-item .mbox-imageright {
-	display: none !important;
+  display: none !important;
 }
 
 /* Remove bullets when there are multiple edit page warnings */
 ul.permissions-errors {
-	margin: 0;
+  margin: 0;
 }
 
 ul.permissions-errors > li {
-	list-style: none;
+  list-style: none;
 }
 
 /* larger inline math */
 span.mwe-math-mathml-inline {
-	font-size: 118%;
+  font-size: 118%;
 }
 
 /* Make <math display="block"> be left aligned with one space indent for 
@@ -236,36 +238,38 @@ span.mwe-math-mathml-inline {
  */
 .mwe-math-fallback-image-display,
 .mwe-math-mathml-display {
-	margin-left: 1.6em !important;
-	margin-top: 0.6em;
-	margin-bottom: 0.6em;
+  margin-left: 1.6em !important;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
 }
 
 .mwe-math-mathml-display math {
-	display: inline;
+  display: inline;
 }
 
 @media screen {
-	/* Put a chequered background behind images, only visible if they have transparency,
+  /* Put a chequered background behind images, only visible if they have transparency,
 	 * except on main, user, and portal namespaces
 	 */
-	body:not(.ns-0):not(.ns-2):not(.ns-100) .gallerybox .thumb img {
-		background: #fff url(//upload.wikimedia.org/wikipedia/commons/5/5d/Checker-16x16.png) repeat;
-	}
+  body:not(.ns-0):not(.ns-2):not(.ns-100) .gallerybox .thumb img {
+    background: #fff
+      url(//upload.wikimedia.org/wikipedia/commons/5/5d/Checker-16x16.png)
+      repeat;
+  }
 
-	/* Display "From Wikipedia, the free encyclopedia" in skins that support it,
+  /* Display "From Wikipedia, the free encyclopedia" in skins that support it,
 	   do not apply to print mode */
-	#siteSub {
-		display: block;
-	}
-	
-	/* Make the list of references smaller
+  #siteSub {
+    display: block;
+  }
+
+  /* Make the list of references smaller
 	 * Keep in sync with Template:Refbegin/styles.css
 	 * And Template:Reflist/styles.css
 	 */
-	.references {
-		font-size: 90%;
-	}
+  .references {
+    font-size: 90%;
+  }
 }
 
 /* Hide FlaggedRevs notice UI when there are no pending changes */
@@ -275,7 +279,7 @@ span.mwe-math-mathml-inline {
 #t-upload,
 /* Hide broken download box on Special:Book pending T285400 */
 .mw-special-Book #coll-downloadbox {
-	display: none;
+  display: none;
 }
 
 /*
@@ -286,40 +290,40 @@ span.mwe-math-mathml-inline {
 
 /* Infoboxes */
 .infobox {
-	border: 1px solid #a2a9b1;
-	color: black;
-	padding: 0.2em;
-	font-size: 88%;
-	line-height: 1.5em;
-	border-spacing: 3px;
+  border: 1px solid #a2a9b1;
+  color: black;
+  padding: 0.2em;
+  font-size: 88%;
+  line-height: 1.5em;
+  border-spacing: 3px;
 }
 
 @media screen {
-	.infobox {
-		background-color: #f8f9fa;
-    }
+  .infobox {
+    background-color: #f8f9fa;
+  }
 }
 
 @media (max-width: 640px) {
-	.infobox {
-		width: 100%;
-	}
-    
-	.infobox .nowrap {
-		white-space: normal;
-	}
+  .infobox {
+    width: 100%;
+  }
+
+  .infobox .nowrap {
+    white-space: normal;
+  }
 }
 
 @media (min-width: 640px) {
-	.infobox {
-		/* @noflip */
-		margin: 0.5em 0 0.5em 1em;
-		/* @noflip */
-		float: right;
-		/* @noflip */
-		clear: right;
-		width: 22em;
-	}
+  .infobox {
+    /* @noflip */
+    margin: 0.5em 0 0.5em 1em;
+    /* @noflip */
+    float: right;
+    /* @noflip */
+    clear: right;
+    width: 22em;
+  }
 }
 
 .infobox-header,
@@ -334,7 +338,7 @@ span.mwe-math-mathml-inline {
 /* Remove element selector when every .infobox thing is using the standard module/templates  */
 .infobox th,
 .infobox td {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 .infobox-label,
@@ -342,8 +346,8 @@ span.mwe-math-mathml-inline {
 /* Remove element selector when every .infobox thing is using the standard module/templates  */
 .infobox th,
 .infobox td {
-	/* @noflip */
-	text-align: left;
+  /* @noflip */
+  text-align: left;
 }
 
 /* Remove .infobox when element selectors above are removed */
@@ -351,15 +355,15 @@ span.mwe-math-mathml-inline {
 .infobox .infobox-title,
 /* Remove element selector when every .infobox thing is using the standard module/templates  */
 .infobox caption {
-	font-size: 125%;
-	font-weight: bold;
-	text-align: center;
+  font-size: 125%;
+  font-weight: bold;
+  text-align: center;
 }
 
 .infobox-title,
 /* Remove element selector when every .infobox thing is using the standard module/templates  */
 .infobox caption {
-	padding: 0.2em;
+  padding: 0.2em;
 }
 
 /* Remove .infobox when element selectors above are removed */
@@ -368,78 +372,78 @@ span.mwe-math-mathml-inline {
 .infobox .infobox-image,
 .infobox .infobox-full-data,
 .infobox .infobox-below {
-	text-align: center;
+  text-align: center;
 }
 
 /* Remove .infobox when element selectors above are removed */
 .infobox .infobox-navbar {
-	/* @noflip */
-	text-align: right;
+  /* @noflip */
+  text-align: right;
 }
 
 /* Normal font styling for wikitable row headers with scope="row" tag */
-.wikitable.plainrowheaders th[scope=row],
-.wikitable.plainrowheaders th[scope=rowgroup] {
-	font-weight: normal;
-	/* @noflip */
-	text-align: left;
+.wikitable.plainrowheaders th[scope="row"],
+.wikitable.plainrowheaders th[scope="rowgroup"] {
+  font-weight: normal;
+  /* @noflip */
+  text-align: left;
 }
 
 /* Remove underlines from certain links */
 .nounderlines a,
 .IPA a:link,
 .IPA a:visited {
-	text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 /* Prevent line breaks in silly places where desired (nowrap)
    and links when we don't want them to (nowraplinks a) */
 .nowrap,
 .nowraplinks a {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 /* But allow wrapping where desired: */
 .wrap,
 .wraplinks a {
-	white-space: normal;
+  white-space: normal;
 }
 
 /* texhtml class for inline math (based on generic times-serif class) */
 /* remove spans when this is TemplateStyled */
 span.texhtml {
-	font-family: "Nimbus Roman No9 L", "Times New Roman", Times, serif;
-	font-size: 118%;
-	line-height: 1;
-	/* Force tabular and lining display for texhtml */
-	font-variant-numeric: lining-nums tabular-nums;
-	font-kerning: none;
+  font-family: "Nimbus Roman No9 L", "Times New Roman", Times, serif;
+  font-size: 118%;
+  line-height: 1;
+  /* Force tabular and lining display for texhtml */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-kerning: none;
 }
 
 span.texhtml span.texhtml {
-	font-size: 100%;
+  font-size: 100%;
 }
 
 @media (min-width: 640px) {
-	span.texhtml {
-		white-space: nowrap;
-	}
+  span.texhtml {
+    white-space: nowrap;
+  }
 }
 
 /* Prevent flags in tables from collapsing: Fix for T116318
  * TODO: Remove when [[phab:T368469]] merges [[phab:T367463]] for the other skins
  */
 @media (max-width: 640px) {
-	.flagicon a > img,
-	.flagicon noscript > img {
-		max-width: none !important;
-	}
+  .flagicon a > img,
+  .flagicon noscript > img {
+    max-width: none !important;
+  }
 }
 
 @media screen {
-	.nochecker .gallerybox .thumb img {
-		background-image: none;
-	}
+  .nochecker .gallerybox .thumb img {
+    background-image: none;
+  }
 }
 
 /*

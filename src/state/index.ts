@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 interface State {
+  scienceMode: boolean;
   rotate: boolean;
   tilt: boolean;
   showInformationPanel: boolean;
@@ -10,6 +11,7 @@ interface State {
 }
 
 interface Action {
+  setScienceMode: (scienceMode: boolean) => void;
   setRotate: (rotate: boolean) => void;
   setTilt: (tilt: boolean) => void;
   setShowInformationPanel: (showInformationPanel: boolean) => void;
@@ -19,6 +21,7 @@ interface Action {
 }
 
 const initialState: State = {
+  scienceMode: false,
   rotate: true,
   tilt: false,
   showInformationPanel: false,
@@ -29,6 +32,7 @@ const initialState: State = {
 
 export const useStore = create<State & Action>((set) => ({
   ...initialState,
+  setScienceMode: (scienceMode) => set({ scienceMode }),
   setRotate: (rotate) => set({ rotate }),
   setTilt: (tilt) => set({ tilt }),
   setShowInformationPanel: (showInformationPanel) =>

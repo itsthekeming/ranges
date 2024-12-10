@@ -40,7 +40,7 @@ function Camera() {
       showInformationPanel,
       orientation,
       setOrientation,
-    })
+    }),
   );
 
   const ref = useRef<PerspectiveCameraImpl>(null);
@@ -57,7 +57,7 @@ function Camera() {
   // update state orientation. this will allow us to read orientation outside of three.js context
   useEffect(() => {
     setOrientation(
-      viewport.width >= viewport.height ? "landscape" : "portrait"
+      viewport.width >= viewport.height ? "landscape" : "portrait",
     );
   }, [setOrientation, viewport.width, viewport.height]);
 
@@ -69,7 +69,7 @@ function Camera() {
       orientation === "landscape" ? offset.get() : 0,
       orientation === "portrait" ? offset.get() : 0,
       viewport.width,
-      viewport.height
+      viewport.height,
     );
   });
 
